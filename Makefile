@@ -1,48 +1,32 @@
 # ========= CONFIG ============
-NAME		= pipex
+NAME		= minishell
 
 CC		= cc
 CFLAGS		= -Wall -Wextra -Werror
-INCDIRS		= -Iincludes -Ilibft
 
-SRCDIR		= srcs
-OBJDIR		= objs
-LIBFTDIR	= libft
-LIBFT		= $(LIBFTDIR)/libft.a
+SRC		= src/main.c src/input.c src/tokenize.c src/parse.c \
+		src/exec_builtin.c src/exec_external.c src/redirect.c \
+		src/pipe.c src/signal.c src/utils_string.c src/utils_env.c
 
-SRC		= $(wildcard $(SRCDIR)/*.c)
-OBJ		= $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRC))
+OBJ		= $(SRC:.c=.o)
+
+INCLUDE		= -I include/
 
 # ========= RULES =============
 all: $(NAME)
 
 # pipex 的最终链接目标
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(INCDIRS) $(OBJ) $(LIBFT) -o $(NAME)
-
-# 自动生成 .o 文件到 objs 目录
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
-	@mkdir -p $(OBJDIR)
-	$(CC) $(CFLAGS) $(INCDIRS) -c $< -o $@
-
-# 编译 libft
-$(LIBFT):
-	$(MAKE) -C $(LIBFTDIR)
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(INCLUDE) -o $(NAME)
 
 # ========= CLEANING ==========
 clean:
-	$(MAKE) clean -C $(LIBFTDIR)
-	rm -rf $(OBJDIR)
+	rm -f $(OBJ)
 
 fclean: clean
-	$(MAKE) fclean -C $(LIBFTDIR)
 	rm -f $(NAME)
 
 re: fclean all
-
-# ========= BONUS (可选) =======
-debug:
-	$(MAKE) CFLAGS="-g3 -fsanitize=address -Wall -Wextra -Werror" re
 
 # ========= PHONY RULES ========
 .PHONY: all clean fclean re
