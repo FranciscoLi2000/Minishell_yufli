@@ -7,7 +7,7 @@ void	read_input(t_shell *sh, char **line)
 	int		i;
 
 	(void)sh;
-	write(1, "minishell$ ", 11);
+	ft_putstr("minishell$ ");
 	i = 0;
 	bytes = read(0, buffer, BUFFER_SIZE - 1);
 	if (bytes <= 0)
