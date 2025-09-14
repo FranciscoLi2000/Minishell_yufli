@@ -1,32 +1,37 @@
-# ========= CONFIG ============
 NAME		= minishell
+
+SRC		= \
+		exec_builtin.c ft_echo.c ft_export.c ft_unset.c output.c \
+		redirect.c utils_env.c exec_external.c ft_env.c ft_putendl_fd.c \
+		input.c parse.c signal.c utils_string.c ft_cd.c \
+		ft_exit.c ft_pwd.c main.c pipe.c tokenize.c
+
+SRCS		= ${addprefix ${PRE}, ${SRC}}
+
+OBJS		= ${SRCS:.c=.o}
+
+PRE		= ./srcs/
+HEAD		= ./includes/
+
+RM		= rm -f
 
 CC		= cc
 CFLAGS		= -Wall -Wextra -Werror
 
-SRC		= src/main.c src/input.c src/tokenize.c src/parse.c \
-		src/exec_builtin.c src/exec_external.c src/redirect.c \
-		src/pipe.c src/signal.c src/utils_string.c src/utils_env.c
+all: ${NAME}
 
-OBJ		= $(SRC:.c=.o)
+.c.o:
+	${CC} ${CFLAGS} -c -I ${HEAD} $< -o ${<:.c=.o}
 
-INCLUDE		= -I include/
+${NAME}: ${OBJS}
+	${CC} ${CFLAGS} ${OBJS} -o ${NAME}
 
-# ========= RULES =============
-all: $(NAME)
-
-# pipex 的最终链接目标
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(INCLUDE) -o $(NAME)
-
-# ========= CLEANING ==========
 clean:
-	rm -f $(OBJ)
+	${RM} ${OBJS}
 
 fclean: clean
-	rm -f $(NAME)
+	${RM} ${NAME}
 
 re: fclean all
 
-# ========= PHONY RULES ========
 .PHONY: all clean fclean re
